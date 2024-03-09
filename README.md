@@ -41,13 +41,14 @@ Usage
     })
     
     # Find documents
-    result = db.find('users', {'age': {'$gt': 25}})
+    
+     result = db.find('users', {"age": {'_op': '$gte', '_value': 25}})
     
     # Update a document
-    db.update('users', {'name': 'Alice'}, {'age': 35})
+    db.update('users', {"name": {'_op': '$eq', '_value': 'Alice'}, {'age': 35})
     
     # Delete a document
-    db.delete('users', {'name': 'Alice'})
+    db.delete('users', {"name": {'_op': '$eq', '_value': 'Alice'}})
     
     # Count documents
     count = db.count('users')
