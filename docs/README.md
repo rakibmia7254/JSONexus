@@ -4,7 +4,7 @@ description: >-
   applications. It provides a simple and intuitive way to store, query, and
   manipulate data using JSON documents.
 ---
-
+<meta name="google-site-verification" content="agYAqB4HYimM20jGXgNC3sQkWTLPZO-35npBx_peH5o" />
 # Getting Started
 
 ### 1. Installation
