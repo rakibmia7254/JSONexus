@@ -41,8 +41,7 @@ Usage
     })
     
     # Find documents
-    
-     result = db.find('users', {"age": {'_op': '$gte', '_value': 25}})
+    result = db.find('users', {"age": {'_op': '$gte', '_value': 25}})
     
     # Update a document
     db.update('users', {"name": {'_op': '$eq', '_value': 'Alice'}, {'age': 35})
