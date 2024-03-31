@@ -68,3 +68,10 @@ License
 -------
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+# New Features
+
+- **deleteby_id**: Allows users to delete an item from a collection by its unique identifier.
+- **updateby_id**: Enables users to update an item in a collection based on its unique identifier.
+- **insert_no_duplicate**: Adds functionality to insert items into a collection without duplicates.
+- **check_duplicate**: Provides a method for checking whether a duplicate item exists in a collection.
