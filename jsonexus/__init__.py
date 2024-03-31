@@ -25,7 +25,20 @@ class JSONexus:
         data['_id'] = str(uuid.uuid4())  # Add a UUID for each record
         db[collection_name].append(data)
         self._write_db(db)
-        return {'status':'success'}
+        return {'status':'success', "data": data}
+    
+    def insert_no_duplicate(self, collection_name, data):
+        db = self.db
+        if collection_name not in db:
+            db[collection_name] = []
+        for item in db[collection_name]:
+            del item['_id']
+            if item == data:
+                return {"status": "duplicate exists", "data": item}
+        data['_id'] = str(uuid.uuid4())  # Add a UUID for each record
+        db[collection_name].append(data)
+        self._write_db(db)
+        return {'status':'success', "data": data}
     
     def insert_many(self, collection_name, data):
         db = self.db
@@ -136,6 +149,14 @@ class JSONexus:
         db = self.db
         return len(db[collection_name])
     
+    def check_duplicate(self, collection_name, data):
+        db = self.db
+        for item in db[collection_name]:
+            del item['_id']
+            if item == data:
+                return {"status": "duplicate exists", "data": item}
+        return {"status": "duplicate does not exist"}
+    
     def get_document(self, collection_name, document_id):
         db = self.db
         for item in db[collection_name]:
@@ -209,7 +230,16 @@ class JSONexus:
                         {"error": "invalid value type"}
         self._write_db(db)
         return {"status": "success"}
-        
+    
+    def updateby_id(self, collection_name, document_id, update_fields):
+        db = self.db
+        for item in db[collection_name]:
+            if item['_id'] == document_id:
+                for update_key, update_value in update_fields.items():
+                    item[update_key] = update_value
+        self._write_db(db)
+        return {"status": "success"}
+    
     def delete(self, collection_name, query):
         db = self.db
         deleted_items = []
@@ -256,6 +286,14 @@ class JSONexus:
                 deleted_items.append(item)
         for item in deleted_items:
             db[collection_name].remove(item)
+        self._write_db(db)
+        return {"status": "success"}
+    
+    def deleteby_id(self, collection_name, document_id):
+        db = self.db
+        for item in db[collection_name]:
+            if item['_id'] == document_id:
+                db[collection_name].remove(item)
         self._write_db(db)
         return {"status": "success"}
     
