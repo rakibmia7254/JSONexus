@@ -1,6 +1,7 @@
 import json
 import os
 import uuid
+
 class JSONexus:
     def __init__(self, db_name):
         self.db_name = db_name
@@ -89,8 +90,6 @@ class JSONexus:
                     if key in list(i.keys()):
                         if i[key]==value:
                             found_data.append(i)
-                    else:
-                        pass
                 return {'result': found_data}
             
             if "_op" in value.keys():
@@ -100,36 +99,24 @@ class JSONexus:
                             if key in list(i.keys()):
                                 if i[key] > value["_value"]:
                                     found_data.append(i)
-                    else:
-                        pass
-                
                 elif value["_op"] == "$gte":
                     if isinstance(value["_value"], int) or isinstance(value["_value"], float):
                         for i in db[collection_name]:
                             if key in list(i.keys()):
                                 if i[key] >= value["_value"]:
                                     found_data.append(i)
-                    else:
-                        pass
-                    
                 elif value["_op"] == "$lt":
                     if isinstance(value["_value"], int) or isinstance(value["_value"], float):
                         for i in db[collection_name]:
                             if key in list(i.keys()):
                                 if i[key] < value["_value"]:
                                     found_data.append(i)
-                    else:
-                        pass
-                    
                 elif value["_op"] == "$lte":
                     if isinstance(value["_value"], int) or isinstance(value["_value"], float):
                         for i in db[collection_name]:
                             if key in list(i.keys()):
                                 if i[key] <= value["_value"]:
                                     found_data.append(i)
-                    else:
-                        pass
-
                 elif value["_op"] == "$eq":
                     for i in db[collection_name]:
                         if key in list(i.keys()):
@@ -145,17 +132,57 @@ class JSONexus:
 
         return {'result': found_data}
     
+    def find_one(self, collection_name, query):
+        db = self.db
+        for key, value in query.items():
+            if isinstance(value, str) or isinstance(value, int):
+                for i in db[collection_name]:
+                    if key in list(i.keys()):
+                        if i[key]==value:
+                            return i
+            if "_op" in value.keys():
+                if value["_op"] == "$gt":
+                    if isinstance(value["_value"], int) or isinstance(value["_value"], float):
+                        for i in db[collection_name]:
+                            if key in list(i.keys()):
+                                if i[key] > value["_value"]:
+                                    return i
+                elif value["_op"] == "$gte":
+                    if isinstance(value["_value"], int) or isinstance(value["_value"], float):
+                        for i in db[collection_name]:
+                            if key in list(i.keys()):
+                                if i[key] >= value["_value"]:
+                                    return i
+                elif value["_op"] == "$lt":
+                    if isinstance(value["_value"], int) or isinstance(value["_value"], float):
+                        for i in db[collection_name]:
+                            if key in list(i.keys()):
+                                if i[key] < value["_value"]:
+                                    return i
+                elif value["_op"] == "$lte":
+                    if isinstance(value["_value"], int) or isinstance(value["_value"], float):
+                        for i in db[collection_name]:
+                            if key in list(i.keys()):
+                                if i[key] <= value["_value"]:
+                                    return i
+                elif value["_op"] == "$eq":
+                    for i in db[collection_name]:
+                        if key in list(i.keys()):
+                            if i[key] == value["_value"]:
+                                return i
+                elif value["_op"] == "$ne":
+                    for i in db[collection_name]:
+                        if key in list(i.keys()):
+                            if i[key] != value["_value"]:
+                                return i
+                else:
+                    return {'error': 'invalid operator'}
+        return []
+
     def count(self, collection_name):
         db = self.db
         return len(db[collection_name])
-    
-    def check_duplicate(self, collection_name, data):
-        db = self.db
-        for item in db[collection_name]:
-            del item['_id']
-            if item == data:
-                return {"status": "duplicate exists", "data": item}
-        return {"status": "duplicate does not exist"}
+
     
     def get_document(self, collection_name, document_id):
         db = self.db
@@ -180,9 +207,9 @@ class JSONexus:
             if match_item:
                 matched_items.append(item)
         if matched_items != []:
-            return {"status": "success", "matched_items": matched_items}
+            return {"status": "success", "result": matched_items}
         else:
-            return {"status": "failed", "matched_items": []}
+            return {"status": "failed", "result": []}
 
     def update(self, collection_name, query, update_fields):
         db = self.db
@@ -280,8 +307,6 @@ class JSONexus:
                         elif operator == "$ne" and item_value == comparison_value:
                             delete_item = False
                             break
-                    else:
-                        pass
             if delete_item:
                 deleted_items.append(item)
         for item in deleted_items:
@@ -296,4 +321,3 @@ class JSONexus:
                 db[collection_name].remove(item)
         self._write_db(db)
         return {"status": "success"}
-    
