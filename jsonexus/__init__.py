@@ -1,23 +1,23 @@
-import json
 import os
 import uuid
+import orjson
 
 class JSONexus:
     def __init__(self, db_name):
         self.db_name = db_name
         if not os.path.exists(db_name):
-            with open(db_name, 'w') as f:
-                json.dump({}, f)
-        with open(db_name,'r') as db:
-            self.db = json.load(db)
+            with open(db_name, 'wb') as f:
+                f.write(orjson.dumps({}))
+        with open(db_name, 'rb') as db:
+            self.db = orjson.loads(db.read())
 
     def _read_db(self):
-        with open(self.db_name, 'r') as f:
-            return json.load(f)
+        with open(self.db_name, 'rb') as f:
+            return orjson.loads(f.read())
 
     def _write_db(self, db):
-        with open(self.db_name, 'w') as f:
-            json.dump(db, f, indent=4)
+        with open(self.db_name, 'wb') as f:
+            f.write(orjson.dumps(db, option=orjson.OPT_INDENT_2))
 
     def insert(self, collection_name, data):
         db = self.db
@@ -26,7 +26,7 @@ class JSONexus:
         data['_id'] = str(uuid.uuid4())  # Add a UUID for each record
         db[collection_name].append(data)
         self._write_db(db)
-        return {'status':'success', "data": data}
+        return {'status': 'success', "data": data}
     
     def insert_no_duplicate(self, collection_name, data):
         db = self.db
@@ -214,13 +214,13 @@ class JSONexus:
     def update(self, collection_name, query, update_fields):
         db = self.db
         for key, value in query.items():
-
             if isinstance(value, str) or isinstance(value, int):
                 for item in db[collection_name]:
                     item_value = item.get(key)
                     if item_value == value:
                         for update_key, update_value in update_fields.items():
                             item[update_key] = update_value
+                            return {"status": "success"}
 
             if "_op" in value.keys():
                 operator = value["_op"]
