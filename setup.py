@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="jsonexus",
-    version="1.0.2",
+    version="1.0.3",
     packages=find_packages(),
     long_description=l_description,
     long_description_content_type="text/markdown",
@@ -16,7 +16,7 @@ setup(
     license="MIT",
     keywords="json-database",
     url="https://github.com/rakibma7254/jsonexus",
-    install_requires=[],
+    install_requires=["orjson"],
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
