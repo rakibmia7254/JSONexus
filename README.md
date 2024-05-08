@@ -75,3 +75,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **updateby_id**: Enables users to update an item in a collection based on its unique identifier.
 - **insert_no_duplicate**: Adds functionality to insert items into a collection without duplicates.
 - **check_duplicate**: Provides a method for checking whether a duplicate item exists in a collection.
+
+  # Update
+  I replaced json with orjson for faster operation
+  
+  So, compared to Orjson:
+  Old JSONexus is approximately `17.70` times slower.
+  SQLite is approximately `5.366` times slower.
